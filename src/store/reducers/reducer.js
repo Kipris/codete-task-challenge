@@ -1,20 +1,11 @@
 import * as actions from '../actions/actionTypes';
 
 const initialState = {
-    paragraphs: {},
+    paragraphs: [],
     loading: false,
     error: null,
     pagination: {
-        pages: [
-            {
-                ids: [1, 2, 3, 4, 5],
-                fetched: false
-            },
-            {
-                ids: [6, 7, 8, 9, 10],
-                fetched: false
-            }
-        ],
+        pages: [],
         currentPage: null,
         totalCount: 0
     }
@@ -30,51 +21,30 @@ const fetchParagraphsStart = (state, action) => {
 const fetchParagraphsSuccess = (state, action) => {
     let ids = Object.values(action.payload.paragraphs).map(value => value.id);
     let pages = [...state.pagination.pages];
-    let updatedPages = [];
-    
-    if (pages.length) {
-        let foundPageId = false;
-        for (let i in pages) {
-            if (ids[0] === pages[i].ids[0]) {
-                foundPageId = i;
-                break;
-            }
-        }
-        let updatedPage = {};
-        if (foundPageId) {
-            updatedPage = {
-                ...pages[foundPageId],
-                fetched: true
-            }
-            updatedPages = [
-                ...state.pagination.pages
-            ]
-            updatedPages[foundPageId] = updatedPage;
-        } else {
-            updatedPage = {ids, fetched: true}
-            updatedPages = [
-                ...state.pagination.pages,
-                {...updatedPage}
-            ];
-        }
-    } else {
-        updatedPages = [
-            ...state.pagination.pages,
-            {ids, fetched: true}
-        ]
+
+    let dataIsLoaded = false;
+    for (let i in pages) {
+        dataIsLoaded = pages[i].ids.includes(ids[0]) || dataIsLoaded
     }
+
+    let updatedPage = [];
+    let updatedParagraphs = [];
+    if (!dataIsLoaded) {
+        updatedPage = [{ids, fetched: true}]
+        updatedParagraphs = action.payload.paragraphs.map(paragraph => {
+            return {
+                pageNumber: action.payload.page,
+                ...paragraph
+            }
+        });
+    }
+ 
     return {
         ...state,
-        paragraphs: {
-            ...state.paragraphs,
-            ...action.payload.paragraphs
-        },
+        paragraphs: state.paragraphs.concat(updatedParagraphs),
         pagination: {
             ...state.pagination,
-            pages: [
-                ...state.pagination.pages,
-                ...updatedPages
-            ],
+            pages: state.pagination.pages.concat(updatedPage),
             currentPage: action.payload.page,
             totalCount: action.payload.totalCount
         },

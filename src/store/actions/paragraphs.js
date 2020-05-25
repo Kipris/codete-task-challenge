@@ -33,7 +33,9 @@ export const fetchParagraphs = (payload) => {
             dispatch(fetchParagraphsSuccess({
                 paragraphs: response.data,
                 page: payload.page,
-                totalCount: +response.headers['x-total-count']
+                totalCount: +response.headers['x-total-count'],
+                filteredParagraphs: payload.searchString ? response.data : null,
+                searchString: payload.searchString,
             }));
           })
           .catch(error => {
@@ -46,25 +48,15 @@ export const fetchParagraphs = (payload) => {
 export const filterParagraphs = (payload) => {
     return dispatch => {
         dispatch(fetchParagraphsStart());
-        let params = `?_page=${payload.page}&_limit=${payload.paragraphsPerPage}`;
-        if (payload.searchString) {
-          params += `&title_like=${payload.searchString}`;
-        }
+        let params = `?title_like=${payload.searchString}&_limit=${payload.paragraphsPerPage}`;
         axios.get(`https://jsonplaceholder.typicode.com/posts/${params}`)
           .then(response => {
-            // FILTER:
-            // let params = `?title_like=${value}&_limit=${paragraphsPerPage}`;
-
-            // const filteredParagraphs = res;
-            // setSearchResults(filteredParagraphs);
-            // setParagraphsCount(response.headers.get('X-Total-Count'));
-            // setSearchCount(response.headers.get('X-Total-Count'));
-            // const searchParam = currentPage === 1 ? `?search=${value}` : `?page=${currentPage}&search=${value}`;
-            // history.push({
-            //     pathname: '/paragraphs',
-            //     search: searchParam
-            // })
-            // setLoading(false);
+            dispatch(fetchParagraphsSuccess({
+                filteredParagraphs: response.data,
+                searchString: payload.searchString,
+                page: payload.page,
+                totalCount: +response.headers['x-total-count']
+            }));
           })
           .catch(error => {
 

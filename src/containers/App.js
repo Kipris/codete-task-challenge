@@ -61,7 +61,8 @@ const App = () => {
   const [searchCount, setSearchCount] = useState(0);
 
   const loading = useSelector(state => state.paragraph.loading, shallowEqual);
-  const paragraphs = useSelector(state => state.paragraph.paragraphs, shallowEqual);
+  const paragraphs = useSelector(state => state.paragraph.paragraphs, shallowEqual)
+    .filter(paragraph => paragraph.pageNumber === currentPage);
   const paragraphsCount = useSelector(state => state.paragraph.pagination.totalCount, shallowEqual);
 
   const handleSearch = (event, value) => {
@@ -73,24 +74,25 @@ const App = () => {
   }
 
   useEffect(() => {
-    // if (currentPageIsFetched) {
-    //   const fetchedPages = useSelector(state => state.paragraph.pagination.pages, shallowEqual);
-    //   const currentPageFirstId = currentPage * paragraphsPerPage - paragraphsPerPage + 1;
-    //   let currentPageIsFetched = null;
-    //   for (let page of fetchedPages) {
-    //     currentPageIsFetched = page.ids.includes(currentPageFirstId)
-    //   }
-    //   const startPosition = currentPage * paragraphsPerPage - paragraphsPerPage;
-    //   const count = paragraphsPerPage;
-    //   paragraphs = Object.assign({}, Object.values({...paragraphs}).splice(startPosition, count));
-    // } else {
-      dispatch(actions.fetchParagraphs({
-        page: currentPage,
-        searchString,
-        paragraphsPerPage,
-      }));
-    // }
+    dispatch(actions.fetchParagraphs({
+      page: currentPage,
+      searchString,
+      paragraphsPerPage,
+    }));
   }, [currentPage])
+
+  // useEffect(() => {
+  //   dispatch(actions.filterParagraphs({
+  //     page: currentPage,
+  //     searchString,
+  //     paragraphsPerPage,
+  //   }));
+  //   const searchParam = currentPage === 1 ? `?search=${searchString}` : `?page=${currentPage}&search=${searchString}`;
+  //   history.push({
+  //       pathname: '/paragraphs',
+  //       search: searchParam
+  //   })
+  // }, [searchString])
 
   let main = <CircularProgress className={classes.progress} />;
   if (paragraphs && !loading) {
