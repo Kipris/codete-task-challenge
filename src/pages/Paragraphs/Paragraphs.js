@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useReducer } from 'react';
-import Paragraph from './Paragraph';
+import React from 'react';
+import Paragraph from './Paragraph/Paragraph';
 
 const Paragraphs = ({paragraphs}) => {
     return <>
-            {paragraphs
-                .map(paragraph => {
+            {paragraphs.length 
+                ? paragraphs.map(paragraph => {
                     const body = paragraph.body.length >= 80
                         ? `${paragraph.body.slice(0, 80)}...`
                         : paragraph.body;
@@ -15,7 +15,9 @@ const Paragraphs = ({paragraphs}) => {
                             title={paragraph.title}
                             body={body}/>
                     )
-            })}
+                })
+                : <p>No entries found</p>
+            }
         </>
 }
  

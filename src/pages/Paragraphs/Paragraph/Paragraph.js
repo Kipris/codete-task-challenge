@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-    Link,
-    useParams,
-    useRouteMatch
-  } from "react-router-dom";
+import { Link, useRouteMatch } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -23,16 +19,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Paragraph = ({id, title, body}) => {
-    let { path, url } = useRouteMatch();
+    let { path } = useRouteMatch();
     const classes = useStyles();
     const to = `${path}/${id}`;
 
     const CustomLink = React.useMemo(
-        () =>
-          React.forwardRef((linkProps, ref) => (
-            <Link ref={ref} to={to} {...linkProps} />
-          )),
-        [to],
+      () =>
+        React.forwardRef((linkProps, ref) => (
+          <Link ref={ref} to={to} {...linkProps} />
+        )), [to]
     );
 
     return (
@@ -49,7 +44,6 @@ const Paragraph = ({id, title, body}) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                {/* <Link to={`${path}/${id}`}>more</Link> */}
                 <Button size="small" color="primary" component={CustomLink}>Learn More</Button>
             </CardActions>
         </Card>

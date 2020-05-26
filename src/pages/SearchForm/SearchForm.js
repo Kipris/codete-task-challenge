@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TextField from '@material-ui/core/TextField';
 
-const SearchForm = ({searchString, handleSearch}) => {
-
+const SearchForm = ({searchString, handleSearch, handleSelect}) => {
     return (
         <form noValidate autoComplete="off">
             <TextField 

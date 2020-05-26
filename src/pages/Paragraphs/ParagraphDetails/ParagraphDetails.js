@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useParams,
-  useRouteMatch,
-  useHistory
-} from "react-router-dom";
+import {  useParams, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -30,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-const FullParagraph = () => {
+const ParagraphDetails = () => {
     const classes = useStyles();
     const history = useHistory();
     const { paragraphId } = useParams();
@@ -76,4 +68,4 @@ const FullParagraph = () => {
     );
 }
  
-export default FullParagraph;
+export default ParagraphDetails;

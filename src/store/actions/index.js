@@ -1,6 +1,5 @@
 export {
     fetchParagraphs,
-    filterParagraphs,
     fetchParagraphsStart,
     fetchParagraphsSuccess,
     fetchParagraphsFail

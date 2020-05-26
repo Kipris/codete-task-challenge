@@ -22,44 +22,24 @@ export const fetchParagraphsFail = (error) => {
 }
 
 export const fetchParagraphs = (payload) => {
-    return dispatch => {
+    return async dispatch => {
         dispatch(fetchParagraphsStart());
-        let params = `?_page=${payload.page}&_limit=${payload.paragraphsPerPage}`;
-        if (payload.searchString) {
-          params += `&title_like=${payload.searchString}`;
-        }
-        axios.get(`https://jsonplaceholder.typicode.com/posts/${params}`)
-          .then(response => {
-            dispatch(fetchParagraphsSuccess({
+        try {
+            const response = await axios.get(`https://jsonplaceholder.typicode.com/posts/`, {
+                params: {
+                    _page: payload.page,
+                    _limit: payload.paragraphsPerPage,
+                    q: payload.searchString
+                }
+            });
+            return dispatch(fetchParagraphsSuccess({
                 paragraphs: response.data,
                 page: payload.page,
                 totalCount: +response.headers['x-total-count'],
-                filteredParagraphs: payload.searchString ? response.data : null,
-                searchString: payload.searchString,
+                searchString: payload.searchString
             }));
-          })
-          .catch(error => {
-            console.error(error);
-            dispatch(fetchParagraphsFail(error));
-          });
-    }
-}
-
-export const filterParagraphs = (payload) => {
-    return dispatch => {
-        dispatch(fetchParagraphsStart());
-        let params = `?title_like=${payload.searchString}&_limit=${payload.paragraphsPerPage}`;
-        axios.get(`https://jsonplaceholder.typicode.com/posts/${params}`)
-          .then(response => {
-            dispatch(fetchParagraphsSuccess({
-                filteredParagraphs: response.data,
-                searchString: payload.searchString,
-                page: payload.page,
-                totalCount: +response.headers['x-total-count']
-            }));
-          })
-          .catch(error => {
-
-          });
+        } catch (error) {
+            return dispatch(fetchParagraphsFail(error));
+        }
     }
 }
