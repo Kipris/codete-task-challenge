@@ -1,5 +1,5 @@
-import React, { useState, useEffect} from 'react';
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useDebounce } from 'use-debounce';
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 
@@ -13,11 +13,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import SearchForm from './SearchForm/SearchForm';
 import Paragraphs from './Paragraphs/Paragraphs';
 import ParagraphPagination from './ParagraphPagination/ParagraphPagination';
-import ParagraphsRoute from './Paragraphs/ParagraphsRoute';
-import ParagraphDetailsRoute from './Paragraphs/ParagraphDetails/ParagraphDetailsRoute';
 import ParagraphDetails from './Paragraphs/ParagraphDetails/ParagraphDetails';
 
-import reducer from '../store/reducers/reducer';
 import * as actions from '../store/actions/index';
 
 const useStyles = makeStyles((theme) => ({
@@ -49,14 +46,14 @@ const App = () => {
 
   const [currentPage, setCurrentPage] = useState(page);
   const [searchString, setSearchString] = useState(search);
-  const [paragraphsPerPage, setParagraphsPerPage] = useState(5);
+  const [paragraphsPerPage] = useState(5);
 
   const [debouncedPage] = useDebounce(currentPage, 500);
   const [debouncedSearchString] = useDebounce(searchString, 500);
 
-  const loading = useSelector(state => state.paragraph.loading, shallowEqual);
-  const paragraphs = useSelector(state => state.paragraph.paragraphs, shallowEqual);
-  const paragraphsCount = useSelector(state => state.paragraph.pagination.totalCount, shallowEqual);
+  const loading = useSelector(state => state.paragraphs.loading, shallowEqual);
+  const paragraphs = useSelector(state => state.paragraphs.paragraphs, shallowEqual);
+  const paragraphsCount = useSelector(state => state.paragraphs.pagination.totalCount, shallowEqual);
 
   const handleSearch = (event, value) => {
     setSearchString(value);
@@ -72,33 +69,35 @@ const App = () => {
       searchString: debouncedSearchString,
       paragraphsPerPage,
     }));
-    let searchParam = debouncedPage === 1 
+
+    let searchParam = debouncedPage === 1
       ? ''
       : `page=${debouncedPage}`;
     if (debouncedSearchString.trim().length) {
-      searchParam = debouncedPage === 1 
-        ? `search=${debouncedSearchString}` 
+      searchParam = debouncedPage === 1
+        ? `search=${debouncedSearchString}`
         : `page=${debouncedPage}&search=${debouncedSearchString}`;
     };
     history.push({
-        pathname: '/paragraphs/',
-        search: searchParam
+      pathname: '/paragraphs/',
+      search: searchParam
     })
   }, [debouncedPage, debouncedSearchString])
 
   let main = <CircularProgress className={classes.progress} />;
-    if (paragraphs && !loading) {
-        main = (
-            <>
-                <Paragraphs 
-                    paragraphs={Object.values(paragraphs)} /> 
-                <ParagraphPagination 
-                    count={Math.ceil(paragraphsCount / paragraphsPerPage)}
-                    page={debouncedPage}
-                    handlePaginate={handlePaginate} />  
-            </>
-        )
-    }
+  if (paragraphs && !loading) {
+    main = (
+      <>
+        <Paragraphs
+          paragraphs={Object.values(paragraphs)} />
+        <ParagraphPagination
+          count={Math.ceil(paragraphsCount / paragraphsPerPage)}
+          page={debouncedPage}
+          searchString={debouncedSearchString}
+          handlePaginate={handlePaginate} />
+      </>
+    )
+  }
 
   return (
     <>
@@ -110,30 +109,22 @@ const App = () => {
               <ParagraphDetails />
             </Route>
             <Route path='/paragraphs'>
-                <>
-                <Typography 
-                    className={classes.h1}
-                    component="h1" 
-                    variant="h4" 
-                    align="center">
-                    Paragraphs
+              <>
+                <Typography
+                  className={classes.h1}
+                  component="h1"
+                  variant="h4"
+                  align="center">
+                  Paragraphs
                 </Typography>
-                <SearchForm 
-                    searchString={searchString}
-                    handleSearch={handleSearch} />
+                <SearchForm
+                  searchString={searchString}
+                  handleSearch={handleSearch} />
                 {main}
-                </>
+              </>
             </Route>
-            {/* <ParagraphsRoute 
-              paragraphs={paragraphs}
-              loading={loading}
-              paragraphsCount={paragraphsCount}
-              paragraphsPerPage={paragraphsPerPage}
-              page={page}
-              handlePaginate={handlePaginate}
-              handleSearch={handleSearch} /> */}
             <Redirect to='/paragraphs' />
-          </Switch> 
+          </Switch>
         </Paper>
       </Container>
     </>

@@ -10,24 +10,24 @@ import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
     card: {
-      marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(3)
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3)
     },
     title: {
-      textTransform: 'capitalize'
+        textTransform: 'capitalize'
     }
 }));
 
-const Paragraph = ({id, title, body}) => {
+const Paragraph = ({ id, title, body }) => {
     let { path } = useRouteMatch();
     const classes = useStyles();
     const to = `${path}/${id}`;
 
     const CustomLink = React.useMemo(
-      () =>
-        React.forwardRef((linkProps, ref) => (
-          <Link ref={ref} to={to} {...linkProps} />
-        )), [to]
+        () =>
+            React.forwardRef((linkProps, ref) => (
+                <Link ref={ref} to={to} {...linkProps} />
+            )), [to]
     );
 
     return (
@@ -35,7 +35,7 @@ const Paragraph = ({id, title, body}) => {
             <CardContent>
                 <Typography
                     className={classes.title}
-                    variant="h5" 
+                    variant="h5"
                     component="h2">
                     {title}
                 </Typography>
@@ -49,5 +49,5 @@ const Paragraph = ({id, title, body}) => {
         </Card>
     );
 }
- 
+
 export default Paragraph;

@@ -1,5 +1,6 @@
 import React from 'react';
 import Paragraph from './Paragraph/Paragraph';
+import Typography from '@material-ui/core/Typography';
 
 const Paragraphs = ({paragraphs}) => {
     return <>
@@ -16,7 +17,10 @@ const Paragraphs = ({paragraphs}) => {
                             body={body}/>
                     )
                 })
-                : <p>No entries found</p>
+                : <Typography
+                    component="p">
+                    No entries found
+                </Typography>
             }
         </>
 }
